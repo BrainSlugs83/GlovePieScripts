@@ -1,0 +1,164 @@
+﻿// Glove PIE Xbox One Controller with ChatPad Script
+// By BrainSlugs83 2021/08/21 -- Licensed as CC0.
+
+// CONFIG
+var.lfPwr = .03;
+var.rtPwr = .0075;
+var.deadZone = .2;
+var.scrollSpeed = .375;
+
+// ========== TO CHANGE THE VOICE: ==========
+// 1. OPEN CONTROL PANEL
+// 2. SEARCH FOR "SPEECH"
+// 3. CLICK "Change Text-to-Speech Settings".
+// 4. IN THE "Text to Speech" TAB, CONFIGURE THE VOICE.
+// (It sounds best with Hazel (GB) at the 13th speed, IMO).
+
+// DETECT MODE TOGGLES (CAPS + SHIFT, OR CAPS + 0-9)
+var.cap = Keyboard.CapsLock && (Keyboard.Shift || Keyboard.One || Keyboard.Two || Keyboard.Three || Keyboard.Four || Keyboard.Five || Keyboard.Six || Keyboard.Seven || Keyboard.Eight || Keyboard.Nine || Keyboard.Zero);
+
+if (var.cap && delta(var.cap)) {
+
+   //if (Keyboard.Shift && var.mode == 0) var.newMode = -1;
+   //if (Keyboard.Shift && var.mode != 0) var.newMode = 0;
+   if (Keyboard.Shift) var.newMode = -1;
+   if (Keyboard.One) var.newMode = 1;
+   if (Keyboard.Two) var.newMode = 2;
+   if (Keyboard.Three) var.newMode = 3;
+   if (Keyboard.Four) var.newMode = 4;
+   if (Keyboard.Five) var.newMode = 5;
+   if (Keyboard.Six) var.newMode = 6;
+   if (Keyboard.Seven) var.newMode = 7;
+   if (Keyboard.Eight) var.newMode = 8;
+   if (Keyboard.Nine) var.newMode = 9;
+   if (Keyboard.Zero) var.newMode = 10;
+
+   if (var.mode == var.newMode) var.newMode = 0;
+   var.mode = var.newMode;
+
+   var.mode = var.newMode;
+   var.lfClick = false;
+   var.rtClick = false;
+   var.scroll = 0;
+
+   Mouse.LeftButton = false;
+   Mouse.RightButton = false;
+   Mouse.WheelUp = false;
+   Mouse.WheelDown = false;
+
+   Keyboard.Up = false;
+   Keyboard.Down = false;
+   Keyboard.Left = false;
+   Keyboard.Right = false;
+
+   Keyboard.A = false;
+   Keyboard.B = false;
+   Keyboard.X = false;
+   Keyboard.Y = false;
+   Keyboard.L = false;
+   Keyboard.R = false;
+   Keyboard.LeftBracket = false;
+   Keyboard.RightBracket = false;
+   Keyboard.Escape = false;
+   Keyboard.Enter = false;
+   Keyboard.Shift = false;
+   Keyboard.NUMPAD1 = false;
+   Keyboard.NUMPAD2 = false;
+   Keyboard.NUMPAD3 = false;
+   Keyboard.NUMPAD4 = false;
+   Keyboard.NUMPAD5 = false;
+   Keyboard.NUMPAD6 = false;
+   Keyboard.NUMPAD7 = false;
+   Keyboard.NUMPAD8 = false;
+   Keyboard.NUMPAD9 = false;
+
+   if (var.mode > 0) say("Mode " + var.mode);
+   if (var.mode == 0) say("Default");
+   if (var.mode == -1) say("Mouse");
+}
+
+if (var.mode == -1) {
+
+   // ========== Mouse Emulation ==========
+
+   // RESET VARS
+   var.mx = 0;
+   var.my = 0;
+
+   if (XInput.RightTrigger > 0) var.scroll += XInput.RightTrigger * var.scrollSpeed;
+   if (XInput.LeftTrigger > 0) var.scroll -= XInput.LeftTrigger * var.scrollSpeed;
+
+   // READ XINPUT FOR CURSOR MOVEMENT
+   if (abs(XInput.LeftStickX) > var.deadZone) var.mx += XInput.LeftStickX * abs(XInput.LeftStickX) * var.lfPwr;
+   if (abs(XInput.LeftStickY) > var.deadZone) var.my -= XInput.LeftStickY * abs(XInput.LeftStickY) * var.lfPwr;
+   if (abs(XInput.RightStickX) > var.deadZone) var.mx += XInput.RightStickX * abs(XInput.RightStickX) * var.rtPwr;
+   if (abs(XInput.RightStickY) > var.deadZone) var.my -= XInput.RightStickY * abs(XInput.RightStickY) * var.rtPwr;
+
+   if (XInput.LeftShoulder != var.rtClick) {
+      var.rtClick = XInput.LeftShoulder;
+      Mouse.RightButton = var.rtClick;
+   }
+
+   if (XInput.RightShoulder != var.lfClick) {
+      var.lfClick = XInput.RightShoulder;
+      Mouse.LeftButton = var.lfClick;
+   }
+
+   if (var.mx != 0) Mouse.x += var.mx;
+   if (var.my != 0) Mouse.y += var.my;
+
+   if (var.scroll >= 1) {
+      var.scroll -= 1;
+      Mouse.WheelDown = true;
+   } else if (var.scroll <= -1) {
+      var.scroll += 1;
+      Mouse.WheelUp = true;
+   }
+} else if (var.mode == 1 || var.mode == 2) {
+
+     // ========== Keyboard Emulation ==========
+     Keyboard.Left = (XInput.LeftStickX < -var.deadZone || XInput.Left);
+     Keyboard.Right = (XInput.LeftStickX > var.deadZone || XInput.Right);
+     Keyboard.Up = (XInput.LeftStickY > var.deadZone || XInput.Up);
+     Keyboard.Down = (XInput.LeftStickY < -var.deadZone || XInput.Down);
+     Keyboard.A = XInput.A;
+     Keyboard.B = XInput.B;
+     Keyboard.X = XInput.X;
+     Keyboard.Y = XInput.Y;
+     Keyboard.L = XInput.LeftShoulder;
+     Keyboard.R = XInput.RightShoulder;
+     Keyboard.LeftBracket = XInput.LeftTrigger > var.deadZone;
+     Keyboard.RightBracket = XInput.RightTrigger > var.deadZone;
+     Keyboard.Escape = XInput.Back;
+     Keyboard.Enter = XInput.Start;
+     Keyboard.Shift = XInput.LeftThumb;
+
+     if (var.mode == 1) {
+        Keyboard.NUMPAD7 = XInput.RightStickX < -var.deadZone && XInput.RightStickY > var.deadZone;
+        Keyboard.NUMPAD8 = abs(XInput.RightStickX) < var.deadZone && XInput.RightStickY > var.deadZone;
+        Keyboard.NUMPAD9 = XInput.RightStickX > var.deadZone && XInput.RightStickY > var.deadZone;
+
+        Keyboard.NUMPAD4 = XInput.RightStickX < -var.deadZone && abs(XInput.RightStickY) < var.deadZone;
+        Keyboard.NUMPAD5 = XInput.RightThumb;
+        Keyboard.NUMPAD6 = XInput.RightStickX > var.deadZone && abs(XInput.RightStickY) < var.deadZone;
+
+        Keyboard.NUMPAD1 = XInput.RightStickX < -var.deadZone && XInput.RightStickY < -var.deadZone;
+        Keyboard.NUMPAD2 = abs(XInput.RightStickX) < var.deadZone && XInput.RightStickY < -var.deadZone;
+        Keyboard.NUMPAD3 = XInput.RightStickX > var.deadZone && XInput.RightStickY < -var.deadZone;*/
+
+
+     } else if (var.mode == 2) {
+        // RESET VARS
+        var.mx = 0;
+        var.my = 0;
+
+        if (abs(XInput.RightStickX) > var.deadZone) var.mx += XInput.RightStickX * abs(XInput.RightStickX) * ((var.lfPwr * 2 + var.rtPwr) / 3);
+        if (abs(XInput.RightStickY) > var.deadZone) var.my -= XInput.RightStickY * abs(XInput.RightStickY) * ((var.lfPwr * 2 + var.rtPwr) / 3);
+
+        if (var.mx != 0) Mouse.x += var.mx;
+        if (var.my != 0) Mouse.y += var.my;
+
+        Mouse.LeftButton = XInput.RightThumb;
+     }
+}
+
