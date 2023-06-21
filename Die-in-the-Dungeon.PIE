@@ -1,22 +1,23 @@
 ﻿// DIE IN THE DUNGEON bindings for GlovePIE 0.46
 // by Mikey Jensen 2023-06-20 (CC0)
-
+//
 // BOARD can be selected with Numpad or Letters:
-// QWE   /   789
-// ASD   /   456
-// ZXC   /   123
-
+//       QWE   /   789
+//       ASD   /   456
+//       ZXC   /   123
+//
 // HAND can be selected with 1 - 5
-
+//
 // ENTER to end turn
-
+//
 // Choices are F1 - F6 depending on the location on the screen
-
+//
 // F9/F11/ESCAPE -  view dice bag
 // F10/F12 - view discard bag
-
+//
 // When selecting dice to upgrade, discard, etc:
 // Arrow keys to move selection, spacebar to select
+//
 
 var.mx = -1;
 var.my = -1;
