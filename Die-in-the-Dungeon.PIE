@@ -1,0 +1,244 @@
+﻿// DIE IN THE DUNGEON bindings for GlovePIE 0.46
+// by Mikey Jensen 2023-06-20 (CC0)
+
+// BOARD can be selected with Numpad or Letters:
+// QWE   /   789
+// ASD   /   456
+// ZXC   /   123
+
+// HAND can be selected with 1 - 5
+
+// ENTER to end turn
+
+// Choices are F1 - F6 depending on the location on the screen
+
+// F9/F11/ESCAPE -  view dice bag
+// F10/F12 - view discard bag
+
+// When selecting dice to upgrade, discard, etc:
+// Arrow keys to move selection, spacebar to select
+
+var.mx = -1;
+var.my = -1;
+var.click = 0;
+
+// START UP
+if (var.startup == 0) {
+   mouse.x = .625;
+   mouse.y = .7;
+   wait(.3)
+   mouse.LeftButton = !mouse.LeftButton;
+   var.startup = 1;
+}
+
+if (keyboard.ScrollLock) {
+   var.click = -999;
+}
+
+// GAME BOARD
+if (keyboard.NUMPAD7 || Keyboard.Q) {
+   var.mx = .45;
+   var.my = .39;
+}
+if (keyboard.NUMPAD8 || Keyboard.W) {
+   var.mx = .51;
+   var.my = .285;
+}
+if (keyboard.NUMPAD9 || Keyboard.E) {
+   var.mx = .565;
+   var.my = .39;
+}
+if (keyboard.NUMPAD4 || Keyboard.A) {
+   var.mx = .39;
+   var.my = .49;
+}
+if (keyboard.NUMPAD5 || Keyboard.S) {
+   var.mx = .51;
+   var.my = .49;
+}
+if (keyboard.NUMPAD6 || Keyboard.D) {
+   var.mx = .625;
+   var.my = .49;
+}
+
+if (keyboard.NUMPAD1 || Keyboard.Z) {
+   var.mx = .45;
+   var.my = .59;
+}
+if (keyboard.NUMPAD2 || Keyboard.X) {
+   var.mx = .51;
+   var.my = .695;
+}
+if (keyboard.NUMPAD3 || Keyboard.C) {
+   var.mx = .565;
+   var.my = .59;
+}
+
+// Current Hand
+if (keyboard.One) {
+   var.mx = .35;
+   var.my = .9;
+}
+if (keyboard.Two) {
+   var.mx = .43;
+   var.my = .9;
+}
+if (keyboard.Three) {
+   var.mx = .51;
+   var.my = .9;
+}
+if (keyboard.Four) {
+   var.mx = .59;
+   var.my = .9;
+}
+if (keyboard.Five) {
+   var.mx = .67;
+   var.my = .9;
+}
+
+// end of turn
+if (keyboard.Enter || keyboard.NumPadEnter) {
+   var.mx = .42;
+   var.my = .19;
+   var.click = 1;
+}
+
+// horizontal choices
+if (keyboard.F1) {
+   var.mx = .33;
+   var.my = .55;
+   var.click = 1;
+}
+
+if (keyboard.F2) {
+   var.mx = .55;
+   var.my = .55;
+   var.click = 1;
+}
+
+if (keyboard.F3) {
+   var.mx = .8;
+   var.my = .55;
+   var.click = 1;
+}
+
+
+// vertical choices
+if (keyboard.F4) {
+   var.mx = .6;
+   var.my = .605;
+   var.click = 1;
+}
+
+if (keyboard.F5) {
+   var.mx = .6;
+   var.my = .695;
+   var.click = 1;
+}
+
+if (keyboard.F6) {
+   var.mx = .6;
+   var.my = .77;
+   var.click = 1;
+}
+
+// inventory & discard
+if (keyboard.F9 || keyboard.F11 || keyboard.Escape) {
+   var.mx = .05;
+   var.my = .875;
+   var.click = 1;
+}
+
+if (keyboard.F10 || keyboard.F12) {
+   var.mx = .95;
+   var.my = .875;
+   var.click = 1;
+}
+
+if (keyboard.Left) {
+   var.mx = mouse.X - .059;
+   var.my = mouse.Y;
+   var.click = 3;
+}
+if (keyboard.Right) {
+   var.mx = mouse.X + .059;
+   var.my = mouse.Y;
+   var.click = 3;
+}
+
+if (keyboard.Up) {
+   var.mx = mouse.X;
+   var.my = mouse.Y - .1;
+   var.click = 3;
+}
+if (keyboard.Down) {
+   var.mx = mouse.X;
+   var.my = mouse.Y + .1;
+   var.click = 3;
+}
+
+
+if (keyboard.ScrollLock) {
+   var.click = -999;
+}
+
+if (var.click == 3 && (var.mx > .4 || var.mx < .07)) {
+   var.mx = .07;
+}
+
+if (var.click == 3 && (var.my < .3 || var.my > .6)) {
+   var.my = .3;
+}
+
+if (var.click == 3 && (var.mx != -1 || var.my != -1)) {
+
+   mouse.X = var.mx;
+   mouse.Y = var.my;
+   wait(.3);
+}
+
+if (keyboard.Space) {
+   var.mx = mouse.x;
+   var.my = mouse.y
+   var.click = 1;
+}
+
+if (var.click == 0 && (var.mx != -1 || var.my != -1)) {
+
+   mouse.LeftButton = !mouse.LeftButton;
+   wait(.025);
+
+   mouse.x = var.mx;
+   mouse.y = var.my;
+   wait(.025);
+
+   mouse.LeftButton = !mouse.LeftButton;
+   wait(.025);
+
+   mouse.x = .625;
+   mouse.y = .7;
+   wait(.025);
+   mouse.LeftButton = !mouse.LeftButton;
+   wait(.3);
+}
+
+if (var.click == 1 && (var.mx != -1 || var.my != -1)) {
+   mouse.LeftButton = False;
+   mouse.x = var.mx;
+   mouse.y = var.my;
+   wait(.1);
+   mouse.LeftButton = True;
+   wait(.03)
+   mouse.LeftButton = False;
+   wait(.1);
+   mouse.x = .9;
+   mouse.y = .9;
+   var.mx = -1;
+   var.my = -1;
+   wait(.3);
+}
+
+var.px = mouse.x
+var.py = mouse.y
+
+
